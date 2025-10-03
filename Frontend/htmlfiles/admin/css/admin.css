@@ -1,0 +1,27 @@
+/* ==============================
+   Admin Dashboard Styles
+   ============================== */
+.sidebar {
+  min-height: 100vh;
+  border-right: 1px solid #ddd;
+}
+
+.list-group-item {
+  font-weight: 500;
+}
+
+.list-group-item.active {
+  background-color: #198754;
+  border-color: #198754;
+  color: #fff;
+}
+
+.dashboard-card {
+  border-radius: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.2);
+}

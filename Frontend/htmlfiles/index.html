@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GramSeva Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark custom-navbar fixed-top shadow">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">🌿 GramSeva</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="#impact">Impact</a></li>
+
+          <!-- Login Dropdown -->
+          <li class="nav-item dropdown ms-lg-3">
+            <a class="btn btn-outline-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              Login
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end text-center">
+              <li><a class="dropdown-item" href="login.html?role=admin">👮 Admin Login</a></li>
+              <li><a class="dropdown-item" href="login.html?role=user">🧑‍🌾 Citizen Login</a></li>
+              <li><a class="dropdown-item" href="login.html?role=donor">💰 Donor Login</a></li>
+            </ul>
+          </li>
+
+          <!-- Register Dropdown -->
+          <li class="nav-item dropdown ms-2">
+            <a class="btn btn-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              Register
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end text-center">
+              <li><a class="dropdown-item" href="register_villager.html">🧾 Citizen Registration</a></li>
+              <li><a class="dropdown-item" href="register_donor.html">💳 Donor Registration</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero d-flex align-items-center text-center text-white">
+    <div class="container fade-in">
+      <h1 class="display-3 fw-bold">Welcome to GramSeva Portal</h1>
+      <p class="lead mt-3">A digital bridge for rural citizens to raise concerns and donors to support development.</p>
+      <!-- <a href="login.html" class="btn btn-glow btn-lg mt-4">🚀 Get Started</a> -->
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-5 fade-in">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-4">About GramSeva</h2>
+      <p class="lead text-muted mb-4">
+        GramSeva empowers rural citizens by providing a digital platform for complaint registration,
+        donor participation, and transparent fund usage reports.
+      </p>
+      <img src="images/about.png" class="img-fluid rounded shadow" alt="About GramSeva">
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-5 bg-light slide-up">
+    <div class="container">
+      <h2 class="fw-bold text-center mb-5">Key Features</h2>
+      <div class="row text-center g-4">
+        <div class="col-md-4">
+          <div class="card p-4 shadow-sm h-100">
+            <i class="bi bi-megaphone fs-1 text-primary mb-3"></i>
+            <h5>Complaint Management</h5>
+            <p>Citizens register and track complaints, while admins resolve and update status in real-time.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-4 shadow-sm h-100">
+            <i class="bi bi-cash-stack fs-1 text-success mb-3"></i>
+            <h5>Transparent Donations</h5>
+            <p>Donors contribute directly to causes and track how funds are utilized by the administration.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-4 shadow-sm h-100">
+            <i class="bi bi-graph-up fs-1 text-warning mb-3"></i>
+            <h5>Reports & Analytics</h5>
+            <p>Admins generate reports, ensuring transparency and accountability for every action taken.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section id="impact" class="py-5 fade-in">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-5">Our Impact</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="stat-box p-4 bg-primary text-white rounded shadow">
+            <h3>1200+</h3>
+            <p>Complaints Resolved</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-box p-4 bg-success text-white rounded shadow">
+            <h3>500+</h3>
+            <p>Donors Contributing</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-box p-4 bg-warning text-dark rounded shadow">
+            <h3>50+</h3>
+            <p>Villages Empowered</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-5 bg-dark text-white text-center slide-up">
+    <div class="container">
+      <h2 class="fw-bold">Be a Part of the Change</h2>
+      <p class="lead">Join GramSeva to empower rural communities today!</p>
+      <a href="register_donor.html" class="btn btn-success btn-lg mt-3">💳 Become a Donor</a>
+      <a href="register_villager.html" class="btn btn-outline-light btn-lg mt-3">🧾 Register as Citizen</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 GramSeva. All Rights Reserved.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Active Nav Highlight -->
+<script>
+  const sections = document.querySelectorAll("section");
+  const navLinks = document.querySelectorAll(".nav-link");
+
+  window.addEventListener("scroll", () => {
+    let current = "";
+    const scrollPos = window.scrollY + window.innerHeight / 2; // center-based detection
+
+    sections.forEach((section) => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.clientHeight;
+
+      if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+        current = section.getAttribute("id");
+      }
+    });
+
+    navLinks.forEach((link) => {
+      link.classList.remove("active");
+      if (link.getAttribute("href") === "#" + current) {
+        link.classList.add("active");
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

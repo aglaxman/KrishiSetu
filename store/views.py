@@ -4,6 +4,7 @@ from category.models import Category
 # Create your views here.
 
 
+
 def store(req, category_slug = None):
     categories = None
     products = None

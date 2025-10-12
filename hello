@@ -1,0 +1,237 @@
+✅ 🌾 KRISHI SETU — Final Database Schema (ER Model Draft)
+1️⃣ User (Central Authentication Table)
+Field	Type	Description
+user_id (PK)	INT	Unique user ID
+email	VARCHAR	User login email
+password_hash	VARCHAR	Hashed password
+role	ENUM('Farmer', 'Buyer', 'Agent', 'Admin', 'SuperAdmin')	Defines user type
+status	ENUM('Active', 'Inactive', 'Suspended')	Account state
+created_at	DATETIME	When user registered
+last_login	DATETIME	Last login time
+
+Relations:
+
+1–1 → Farmer, Buyer, Agent, Admin, SuperAdmin
+
+2️⃣ Region
+Field	Type	Description
+region_id (PK)	INT	Unique region
+name	VARCHAR	Region name
+state	VARCHAR	State
+district	VARCHAR	District
+pincode	VARCHAR	Pincode
+
+Relations:
+
+1–M → Farmer, Agent, DeliveryAgent
+
+3️⃣ Farmer
+Field	Type	Description
+farmer_id (PK)	INT	Farmer unique ID
+user_id (FK → User)	INT	Link to login
+region_id (FK → Region)	INT	Assigned region
+name	VARCHAR	Farmer name
+contact_number	VARCHAR	Mobile
+address	TEXT	Address
+verified_status	ENUM('Pending','Verified','Rejected')	Verification state
+assurance_tag	BOOLEAN	Premium assurance flag
+subscription_id (FK → Subscription)	INT	Active subscription
+lab_report_id (FK → LabTestReport)	INT	Optional lab test
+
+Relations:
+
+1–M → Product
+
+1–M → OrderItem (via product)
+
+4️⃣ Buyer
+Field	Type	Description
+buyer_id (PK)	INT	Unique buyer ID
+user_id (FK → User)	INT	Link to login
+name	VARCHAR	Buyer name
+phone_number	VARCHAR	Contact
+address	TEXT	Default address
+region_id (FK → Region)	INT	For regional filtering
+wishlist_id	INT	Optional reference
+
+Relations:
+
+1–M → Order, Review
+
+M–M → Product (via Wishlist / Cart)
+
+5️⃣ Agent (Regional Verifier)
+Field	Type	Description
+agent_id (PK)	INT	Unique ID
+user_id (FK → User)	INT	Login link
+region_id (FK → Region)	INT	Assigned region
+name	VARCHAR	Agent name
+phone_number	VARCHAR	Contact
+assigned_farmers	TEXT	List / mapping
+status	ENUM('Active','Inactive')	Work status
+
+Relations:
+
+1–M → Verification
+
+1–M → ConflictTicket (first-level resolution)
+
+6️⃣ Admin
+Field	Type	Description
+admin_id (PK)	INT	Unique ID
+user_id (FK → User)	INT	Login link
+name	VARCHAR	Name
+phone_number	VARCHAR	Contact
+region_id (FK → Region)	INT	Regional control
+
+Relations:
+
+1–M → Agent, ConflictTicket, Report
+
+7️⃣ SuperAdmin
+Field	Type	Description
+superadmin_id (PK)	INT	Unique ID
+user_id (FK → User)	INT	Login link
+name	VARCHAR	Super admin name
+
+Relations:
+
+Full access to all entities (logical, not relational FK)
+
+8️⃣ Product
+Field	Type	Description
+product_id (PK)	INT	Unique product
+farmer_id (FK → Farmer)	INT	Seller
+category	VARCHAR	Crop type
+name	VARCHAR	Product name
+description	TEXT	Description
+price	DECIMAL	Price per unit
+stock_quantity	INT	Available quantity
+assured	BOOLEAN	If verified
+lab_test_report_id (FK → LabTestReport)	INT	Optional
+image_url	VARCHAR	Product image
+
+Relations:
+
+1–M → OrderItem, Review
+
+M–M → Buyer (via Wishlist, Cart)
+
+9️⃣ SubscriptionPlan
+Field	Type	Description
+subscription_id (PK)	INT	Plan ID
+plan_name	VARCHAR	Basic / Assured / Premium
+price	DECIMAL	Plan cost
+duration_days	INT	Validity period
+features	TEXT	Description
+🔟 LabTestReport
+Field	Type	Description
+report_id (PK)	INT	Unique ID
+farmer_id (FK → Farmer)	INT	Linked farmer
+product_id (FK → Product)	INT	Tested product
+test_date	DATETIME	Date tested
+results	TEXT	Lab results summary
+report_url	VARCHAR	Link to report PDF
+1️⃣1️⃣ Order
+Field	Type	Description
+order_id (PK)	INT	Order unique ID
+buyer_id (FK → Buyer)	INT	Buyer
+order_date	DATETIME	When placed
+total_amount	DECIMAL	Total
+payment_id (FK → Payment)	INT	Payment ref
+delivery_id (FK → Delivery)	INT	Delivery ref
+status	ENUM('Pending','Processing','Delivered','Cancelled')	Status
+
+Relations:
+
+1–M → OrderItem
+
+1–1 → Payment, Delivery
+
+1️⃣2️⃣ OrderItem
+Field	Type	Description
+order_item_id (PK)	INT	Unique
+order_id (FK → Order)	INT	Linked order
+product_id (FK → Product)	INT	Purchased product
+farmer_id (FK → Farmer)	INT	Product’s farmer
+quantity	INT	Qty
+price	DECIMAL	Price at purchase
+1️⃣3️⃣ Payment
+Field	Type	Description
+payment_id (PK)	INT	Payment unique
+order_id (FK → Order)	INT	Order ref
+buyer_id (FK → Buyer)	INT	Buyer
+amount	DECIMAL	Amount paid
+payment_method	ENUM('UPI','Card','NetBanking','Wallet')	Mode
+transaction_id	VARCHAR	Gateway ref
+payment_status	ENUM('Pending','Completed','Failed','Refunded')	Status
+payment_date	DATETIME	Date/time
+1️⃣4️⃣ DeliveryAgent
+Field	Type	Description
+delivery_agent_id (PK)	INT	Unique ID
+region_id (FK → Region)	INT	Work region
+name	VARCHAR	Name
+phone_number	VARCHAR	Contact
+status	ENUM('Available','Busy','Inactive')	Status
+1️⃣5️⃣ Delivery
+Field	Type	Description
+delivery_id (PK)	INT	Delivery unique
+order_id (FK → Order)	INT	Related order
+delivery_agent_id (FK → DeliveryAgent)	INT	Assigned agent
+delivery_status	ENUM('Pending','Dispatched','Delivered','Failed')	Status
+estimated_date	DATE	ETA
+actual_date	DATE	Delivered on
+tracking_number	VARCHAR	Tracking ref
+1️⃣6️⃣ Review
+Field	Type	Description
+review_id (PK)	INT	Review unique
+buyer_id (FK → Buyer)	INT	Reviewer
+product_id (FK → Product)	INT	Product reviewed
+farmer_id (FK → Farmer)	INT	Seller
+rating	INT	(1–5)
+comment	TEXT	Review text
+created_at	DATETIME	Date/time
+1️⃣7️⃣ ConflictTicket
+Field	Type	Description
+ticket_id (PK)	INT	Unique ID
+order_id (FK → Order)	INT	Related order
+buyer_id (FK → Buyer)	INT	Who raised
+farmer_id (FK → Farmer)	INT	Opposite party
+agent_id (FK → Agent)	INT	First-level
+admin_id (FK → Admin)	INT	Second-level
+superadmin_id (FK → SuperAdmin)	INT	Final-level
+status	ENUM('Open','InProgress','Resolved','Escalated')	State
+description	TEXT	Complaint
+resolution_note	TEXT	Admin/agent notes
+1️⃣8️⃣ Notification
+Field	Type	Description
+notification_id (PK)	INT	Unique
+user_id (FK → User)	INT	Receiver
+type	ENUM('OrderUpdate','Payment','Subscription','Conflict','General')	Type
+message	TEXT	Content
+read_status	BOOLEAN	True/False
+created_at	DATETIME	Time sent
+⚙️ Relationship Highlights
+
+User → (Farmer / Buyer / Agent / Admin / SuperAdmin) = 1–1
+
+Region → (Farmer / Agent / DeliveryAgent) = 1–M
+
+Farmer → Product = 1–M
+
+Buyer → Order = 1–M
+
+Order → OrderItem = 1–M
+
+Order → Payment / Delivery = 1–1
+
+Farmer ↔ Buyer = M–M (via OrderItem / Review)
+
+ConflictTicket connects Buyer, Farmer, Agent, Admin, SuperAdmin
+
+SubscriptionPlan → Farmer = 1–M
+
+Notification → User = 1–M
+
+Would you like me to generate the ER diagram image for this final refined structure (with all relations, PK/FK clearly drawn)?
+It’ll be perfect to attach in your report or project documentation

@@ -5,6 +5,7 @@ from category.models import Category
 
 
 
+
 def store(req, category_slug = None):
     categories = None
     products = None

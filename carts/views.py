@@ -2,7 +2,9 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from store.models import Product
 from .models import Cart,CartItem
-# Create your views here.
+
+
+
 
 
 def _cart_id(req):
@@ -57,6 +59,8 @@ def remove_cart_item(req , product_id):
 
 def cart(req, total=0, quantity=0, cart_items=None):
     try:
+        tax = 0
+        grand_total = 0
         cart = Cart.objects.get(cart_id=_cart_id(req))
         cart_items = CartItem.objects.filter(cart=cart, is_active = True)
 

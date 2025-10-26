@@ -4,6 +4,7 @@ from category.models import Category
 from carts.models import *
 from carts.views import _cart_id
 from django.core.paginator import EmptyPage, PageNotAnInteger , Paginator
+from django.db.models import Q
 # Create your views here.
 
 
@@ -52,3 +53,19 @@ def product_detail(req, category_slug, product_slug):
         'in_cart' : in_cart,
     }
     return render(req, 'store/product_detail.html', context)
+
+
+
+def search(req):
+    if 'keyword' in req.GET:
+        keyword = req.GET['keyword']
+        if keyword:
+            products = Product.objects.order_by('-created_date').filter(Q(description__icontains=keyword) | Q(product_name__icontains = keyword))
+            product_count = products.count()
+
+    context = {
+        'products' : products,
+        'product_count' : product_count,
+    }
+    return render(req,'store/store.html', context)
+

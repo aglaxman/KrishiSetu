@@ -21,10 +21,11 @@ class RegistrationForm(forms.ModelForm):
         confirm_password = cleaned_data.get('confirm_password')
 
 
-        if password != confirm_password:
-            raise forms.ValidationError(
-                "Password does not match!"
-            )
+        if password and confirm_password and password != confirm_password:
+            
+            self.add_error('confirm_password', "Passwords do not match!")
+
+        return cleaned_data     
         
         
     def __init__(self,*args,**kwargs):

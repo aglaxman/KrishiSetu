@@ -1,80 +1,110 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <section class="section-content padding-y">
 
-<!-- ============================ COMPONENT REGISTER   ================================= -->
-	<div class="card mx-auto" style="max-width:520px; margin-top:40px;">
-      <article class="card-body">
-        {% include 'includes/alerts.html' %}
-		<header class="mb-4"><h4 class="card-title">Sign up</h4></header>
-		<form action="{% url 'register' %}" method='POST'>
-            {% csrf_token  %}
+<div class="card mx-auto" style="max-width:520px; margin-top:40px;">
+  <article class="card-body">
+    <!-- show flash messages from Django messages framework -->
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
 
-				<div class="form-row">
-					<div class="col form-group">
-						<label>First name</label>
-					  	{{ form.first_name }}
-					</div> <!-- form-group end.// -->
-					<div class="col form-group">
-						<label>Last name</label>
-					  	{{ form.last_name }}
-					</div> <!-- form-group end.// -->
-				</div> <!-- form-row end.// -->
-				<div class="form-group">
-					<label>Email</label>
-					{{form.email}}
-					<small class="form-text text-muted">We'll never share your email with anyone else.</small>
-				</div> <!-- form-group end.// -->
-				{% comment %} <div class="form-group">
-					<label class="custom-control custom-radio custom-control-inline">
-					  <input class="custom-control-input" checked="" type="radio" name="gender" value="option1">
-					  <span class="custom-control-label"> Male </span>
-					</label>
-					<label class="custom-control custom-radio custom-control-inline">
-					  <input class="custom-control-input" type="radio" name="gender" value="option2">
-					  <span class="custom-control-label"> Female </span>
-					</label>
-				</div> <!-- form-group end.// --> {% endcomment %}
-				<div class="form-row">
-					
-					
-					<div class="form-group col-md-6">
-					  <label>Phone Number</label>
-                      {{ form.phone_number }}
-					  {% comment %} <select id="inputState" class="form-control">
-					    <option> Choose...</option>
-					      <option>Uzbekistan</option>
-					      <option>Russia</option>
-					      <option selected="">United States</option>
-					      <option>India</option>
-					      <option>Afganistan</option>
-					  </select> {% endcomment %}
-					</div> <!-- form-group end.// -->
-				</div> <!-- form-row.// -->
-				<div class="form-row">
-					<div class="form-group col-md-6">
-						<label>Create password</label>
-					    {{ form.password }}
-					</div> <!-- form-group end.// --> 
-					<div class="form-group col-md-6">
-						<label>Repeat password</label>
-					    {{ form.confirm_password }}
-					</div> <!-- form-group end.// -->  
-				</div>
-			    <div class="form-group">
-			        <button type="submit" class="btn btn-primary btn-block"> Register  </button>
-			    </div> <!-- form-group// -->      
-            {{ form.email.errors }}
-            {{ form.non_field_error }}
-			</form>
-		</article><!-- card-body.// -->
-    </div> <!-- card .// -->
-    <p class="text-center mt-4">Have an account? <a href="">Log In</a></p>
-    <br><br>
-<!-- ============================ COMPONENT REGISTER  END.// ================================= -->
+    <header class="mb-4">
+      <h4 class="card-title">Sign up</h4>
+    </header>
 
+    <form action="{% url 'register' %}" method="post" novalidate>
+      {% csrf_token %}
+
+      <!-- non-field errors (e.g. password mismatch) -->
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <!-- first + last name -->
+      <div class="form-row">
+        <div class="col form-group">
+          <label>First name</label>
+          {{ form.first_name }}
+          {% for error in form.first_name.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+        <div class="col form-group">
+          <label>Last name</label>
+          {{ form.last_name }}
+          {% for error in form.last_name.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- email -->
+      <div class="form-group">
+        <label>Email address</label>
+        {{ form.email }}
+        {% for error in form.email.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+        <small class="form-text text-muted">
+          We'll never share your email with anyone else.
+        </small>
+      </div>
+
+      <!-- phone -->
+      <div class="form-group">
+        <label>Phone number</label>
+        {{ form.phone_number }}
+        {% for error in form.phone_number.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+      </div>
+
+      <!-- password -->
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label>Create password</label>
+          {{ form.password }}
+          {% for error in form.password.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+        <div class="form-group col-md-6">
+          <label>Confirm password</label>
+          {{ form.confirm_password }}
+          {% for error in form.confirm_password.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+      </div>
+    </form>
+
+    <p class="text-center mt-4">
+      Have an account? <a href="{% url 'login' %}">Log in</a>
+    </p>
+  </article>
+</div>
 
 </section>
 
-{% endblock %}
-
+<!-- Optional: fade-out messages automatically -->
+<script>
+setTimeout(function() {
+  $('.alert').fadeOut('slow');
+}, 3000);
+</script>
+		{% endblock %}

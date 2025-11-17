@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts',
     'store',
     'carts',
+    'farmers'
     
 ]
 
@@ -76,6 +77,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'KrishiSetu.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.Account'
+
+
 
 
 # Database

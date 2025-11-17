@@ -1,0 +1,10 @@
+{% autoescape off %}
+
+Hi {{user.first_name}},
+Please Click on below link to confirm your registration as a <b>Farmer!!</b>
+http://{{domain}}{% url 'farmer_activate' uidb64=uid token=token %}
+
+If you think it's not you , please ignore this email.
+
+
+{% endautoescape %}

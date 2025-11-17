@@ -23,14 +23,14 @@
               </li>
             </ul>
             <ul class="navbar-nav">
-              <li>
-                <a href="#" class="nav-link">
-                  <i class="fa fa-envelope"></i> Email
+                <li>
+                <a href="{% url 'farmer_login' %}" class="nav-link">
+                  <i class="fa fa-seedling"></i> Farmer?
                 </a>
               </li>
               <li>
                 <a href="#" class="nav-link">
-                  <i class="fa fa-phone"></i> Call us
+                  <i class="fa fa-phone"></i> Agent?
                 </a>
               </li>
             </ul>
@@ -119,12 +119,14 @@
                   </div>
                 </div>
                 {% endif %}
+                
                 <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
                   <div class="icon icon-sm rounded-circle border">
                     <i class="fa fa-shopping-cart"></i>
                   </div>
                   <span class="badge badge-pill badge-danger notify">{{cart_count}}</span>
                 </a>
+                
               </div>
               <!-- widgets-wrap.// -->
             </div>

@@ -1,0 +1,103 @@
+{% load static %}
+
+{# farmer_dashboard.html - place in templates/your_app/ #}
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Farmer Dashboard</title>
+
+  {# CSS: update path if you placed CSS somewhere else #}
+  <link
+      rel="icon"
+      href="{% static 'images/favicon.ico' %}"
+      type="image/x-icon"
+    />
+  <link rel="stylesheet" href="{% static 'css/farmer_dashboard.css' %}" type="text/css" />
+   <link rel="stylesheet" href="{% static 'css/farmer_add_product.css' %}">
+</head>
+<body>
+  <div class="app">
+
+    {# Sidebar include #}
+    {% include "farmers/includes/dashboard_sidebar.html" %}
+
+    <div class="main">
+
+      {# Navbar include #}
+      {% include "farmers/includes/dashboard_navbar.html" %}
+        <div class="container">
+
+    <h2>Add New Product</h2>
+
+    <form action="{% url 'farmer_add_product' %}" method="POST" enctype="multipart/form-data" class="card">
+    {% csrf_token %}
+
+        <h3 style="margin-top:0;margin-bottom:12px">Add / Edit Product Listing</h3>
+
+        {# Display non-field errors #}
+        {{ form.non_field_errors }}
+
+        <div class="field">
+            <label>Product</label>
+            {{ form.product }}
+            <small class="help">Select an existing product or create a new one below.</small>
+            {% if form.product.errors %}
+            <div class="field-error">{{ form.product.errors|join:", " }}</div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label>Price (₹)</label>
+            {{ form.price }}
+            {% if form.price.errors %}
+            <div class="field-error">{{ form.price.errors|join:", " }}</div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label>Stock</label>
+            {{ form.stock }}
+            {% if form.stock.errors %}
+            <div class="field-error">{{ form.stock.errors|join:", " }}</div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label>Product Image</label>
+            {{ form.image }}
+            <div class="preview" id="imgPreview"></div>
+            {% if form.image.errors %}
+            <div class="field-error">{{ form.image.errors|join:", " }}</div>
+            {% endif %}
+        </div>
+
+        <div class="field" style="margin-top:10px;">
+            <label>Active Listing</label>
+            {{ form.is_active }}
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:15px">
+            Save Product
+        </button>
+    </form>
+
+</div>
+      
+
+
+    </div>
+  </div>
+
+  {# Optional: pass server-side initial data (JSON) into JS. Provide 'initial_data_json' in view context if desired. #}
+  <script>
+    window.INITIAL_DATA = {{ initial_data_json|default:"null"|safe }};
+  </script>
+
+  {# JS: update path if you placed JS somewhere else #}
+  <script src="{% static 'js/farmer_dashboard_scripts.js' %}"></script>
+</body>
+</html>
+

@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'accounts',
     'store',
     'carts',
-    'farmers'
+    'farmers',
+    'orders'
     
 ]
 
@@ -77,6 +78,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'KrishiSetu.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.Account'
+
+AUTHENTICATION_BACKENDS = [
+    'farmers.backends.FarmerBackend',                # custom farmer backend
+    'django.contrib.auth.backends.ModelBackend',    # fallback for your accounts.Account
+]
+
 
 
 

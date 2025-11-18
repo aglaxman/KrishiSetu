@@ -80,3 +80,22 @@ class FarmerAccount(AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, add_label):
         return True
+
+
+
+class FarmerProduct(models.Model):
+    farmer = models.ForeignKey('farmers.FarmerAccount', on_delete=models.CASCADE, related_name='farmer_products')
+    product = models.ForeignKey('store.Product', on_delete=models.CASCADE, related_name='farmer_offers')
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to='farmer_products/', blank=True, null=True)  # optional override
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('farmer', 'product')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.farmer.email} — {self.product.product_name} ({self.price})"

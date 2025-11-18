@@ -1,5 +1,7 @@
 from django import forms
 from .models import FarmerAccount
+from .models import FarmerProduct
+from store.models import Product
 
 class FarmerRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
@@ -34,3 +36,30 @@ class FarmerRegistrationForm(forms.ModelForm):
         
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
+
+
+
+
+class FarmerProductForm(forms.ModelForm):
+    product = forms.ModelChoiceField(
+        queryset=Product.objects.filter(is_available=True).order_by('product_name'),
+        label="Select product",
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        help_text='Choose an existing product from the store catalog'
+    )
+
+    class Meta:
+        model = FarmerProduct
+        fields = ['product', 'price', 'stock', 'image', 'is_active']
+        widgets = {
+            'price': forms.NumberInput(attrs={'min': 0, 'step': '0.01', 'class': 'form-control'}),
+            'stock': forms.NumberInput(attrs={'min': 0, 'class': 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+        labels = {
+            'price': 'Price (₹)',
+            'stock': 'Stock',
+            'image': 'Image (optional override)',
+            'is_active': 'Active listing',
+        }

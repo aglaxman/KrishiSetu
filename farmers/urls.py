@@ -9,5 +9,5 @@ urlpatterns = [
     path('farmer_forgotPassword/',farmer_forgotPassword ,name='farmer_forgotPassword'),
     path('farmer_restpassword_validate/<uidb64>/<token>/',farmer_restpassword_validate, name='farmer_restpassword_validate'),
     path('farmer_resetPassword/',farmer_resetPassword ,name='farmer_resetPassword'),
-
+    path('add-product/', farmer_add_product, name='farmer_add_product'),
 ]

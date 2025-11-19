@@ -164,60 +164,147 @@ def remove_cart_item(req , product_id , cart_item_id):
 
 
 
-def cart(req, total=0, quantity=0, cart_items=None):
+import logging
+from django.shortcuts import render
+from django.core.exceptions import ObjectDoesNotExist
+
+logger = logging.getLogger(__name__)
+
+def cart(req):
+    total = 0.0
+    quantity = 0
+    tax = 0.0
+    grand_total = 0.0
+    cart_items = []
+
     try:
-        tax = 0
-        grand_total = 0
+        # Get cart items for logged-in user
         if req.user.is_authenticated:
-            cart_items = CartItem.objects.filter(user=req.user, is_active = True)
+            cart_items = CartItem.objects.filter(user=req.user, is_active=True)
         else:
-            cart = Cart.objects.get(cart_id=_cart_id(req))
-            cart_items = CartItem.objects.filter(cart=cart, is_active = True)
+            # Use filter() instead of get() to avoid DoesNotExist being raised
+            cart_qs = Cart.objects.filter(cart_id=_cart_id(req))
+            cart = cart_qs.first()  # None if not found
+            if cart:
+                cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+            else:
+                cart_items = []
 
+        # Defensive iteration: if sub_total fails, fallback to price*quantity
         for cart_item in cart_items:
-            total += (cart_item.product.price * cart_item.quantity)
-            quantity += cart_item.quantity
-        tax = (2 * total)/100
+            try:
+                # prefer the model's sub_total method (which should include weight/unit & qty)
+                item_total = float(cart_item.sub_total())
+            except Exception as e:
+                # log the error and fallback
+                logger.exception("CartItem.sub_total() failed for CartItem id=%s. Falling back to price*quantity.", getattr(cart_item, 'id', 'unknown'))
+                try:
+                    item_total = float(cart_item.product.price) * int(cart_item.quantity)
+                except Exception:
+                    # worst-case fallback to 0
+                    item_total = 0.0
+
+            total += item_total
+            # keep overall quantity as sum of quantities (for UI counters)
+            try:
+                quantity += int(cart_item.quantity)
+            except Exception:
+                quantity += 0
+
+        tax = (2.0 * total) / 100.0  # 2%
         grand_total = total + tax
-    except ObjectDoesNotExist:
-        pass
 
-    context={
-        'total':total,
-        'quantity':quantity,
-        'cart_itmes' : cart_items,
-        'tax':tax,
-        'grand_total': grand_total,
+    except Exception as e:
+        # Catch-all so we can log unexpected issues — do not crash the page
+        logger.exception("Unexpected error in cart view: %s", e)
+        total = 0.0
+        quantity = 0
+        tax = 0.0
+        grand_total = 0.0
+        cart_items = []
+
+    # Provide both names in context in case template still uses the old typo
+    context = {
+        'total': round(total, 2),
+        'quantity': quantity,
+        'cart_items': cart_items,
+        'cart_itmes': cart_items,     # keep old name for compatibility (remove later)
+        'tax': round(tax, 2),
+        'grand_total': round(grand_total, 2),
     }
-    return render(req,'store/cart.html', context)
+
+    return render(req, 'store/cart.html', context)
 
 
 
+
+
+import logging
+from django.shortcuts import render
+from django.core.exceptions import ObjectDoesNotExist
+
+logger = logging.getLogger(__name__)
 
 @login_required(login_url='login')
-def checkout(req,total=0, quantity=0, cart_items=None):
+def checkout(req):
+    total = 0.0
+    quantity = 0
+    tax = 0.0
+    grand_total = 0.0
+    cart_items = []
+
     try:
-        tax = 0
-        grand_total = 0
+        # For a logged-in user (login_required ensures user is authenticated),
+        # but keep guest/fallback logic safe in case you remove the decorator later.
         if req.user.is_authenticated:
-            cart_items = CartItem.objects.filter(user=req.user, is_active = True)
+            cart_items = CartItem.objects.filter(user=req.user, is_active=True)
         else:
-            cart = Cart.objects.get(cart_id=_cart_id(req))
-            cart_items = CartItem.objects.filter(cart=cart, is_active = True)
+            cart_qs = Cart.objects.filter(cart_id=_cart_id(req))
+            cart = cart_qs.first()
+            if cart:
+                cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+            else:
+                cart_items = []
 
+        # Calculate totals using the model's sub_total (weight/unit aware)
         for cart_item in cart_items:
-            total += (cart_item.product.price * cart_item.quantity)
-            quantity += cart_item.quantity
-        tax = (2 * total)/100
-        grand_total = total + tax
-    except ObjectDoesNotExist:
-        pass
+            try:
+                item_total = float(cart_item.sub_total())
+            except Exception:
+                logger.exception(
+                    "checkout: failed to compute sub_total for CartItem id=%s. Falling back to price*quantity.",
+                    getattr(cart_item, 'id', 'unknown')
+                )
+                try:
+                    item_total = float(cart_item.product.price) * int(cart_item.quantity)
+                except Exception:
+                    item_total = 0.0
 
-    context={
-        'total':total,
-        'quantity':quantity,
-        'cart_itmes' : cart_items,
-        'tax':tax,
-        'grand_total': grand_total,
+            total += item_total
+
+            try:
+                quantity += int(cart_item.quantity)
+            except Exception:
+                quantity += 0
+
+        tax = (2.0 * total) / 100.0
+        grand_total = total + tax
+
+    except Exception as e:
+        logger.exception("Unexpected error in checkout view: %s", e)
+        total = 0.0
+        quantity = 0
+        tax = 0.0
+        grand_total = 0.0
+        cart_items = []
+
+    context = {
+        'total': round(total, 2),
+        'quantity': quantity,
+        'cart_items': cart_items,
+        'cart_itmes': cart_items,   # kept for backward compatibility with template typo
+        'tax': round(tax, 2),
+        'grand_total': round(grand_total, 2),
     }
-    return render(req,'store/checkout.html',context)
+
+    return render(req, 'store/checkout.html', context)

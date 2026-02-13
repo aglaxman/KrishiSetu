@@ -7,7 +7,7 @@ KrishiSetu is an innovative full-stack platform designed to eliminate intermedia
 
 | Category | Technology |
 | :--- | :--- |
-| **Backend** | Python 3.x, Django 3.1+ |
+| **Backend** | Python 3.10.12, Django 3.1+ |
 | **Database** | SQLite (Dev), |
 | **Frontend** | HTML5, CSS3, Bootstrap 4, **jQuery** |
 | **Payment** | **PayPal SDK** Integration |
@@ -45,15 +45,29 @@ KrishiSetu utilizes a modern **Decoupled Architecture**, leveraging Django's rob
 ---
 ## 📸 Project Showcase (Screenshots)
 
-### 🖥️ Customer Experience
+### Home Page
+
+<img width="2160" height="1440" alt="image" src="https://github.com/user-attachments/assets/23ade0ee-398b-4bb6-bce8-2029692dddc3" />
 
 
-<img src="screenshots/homepage.png" width="100%" alt="Homepage">
+### Store Page
 
+<img width="2160" height="1440" alt="image" src="https://github.com/user-attachments/assets/d8c23872-69a9-415b-95c9-1f838102dc13" />
 
+### Sign Page
 
-### 📊 Management & Checkout
+<img width="2160" height="1440" alt="image" src="https://github.com/user-attachments/assets/0831ddab-3a54-459d-8706-625dce69d806" />
 
+### Dashboard Page
+
+<img width="2160" height="1440" alt="image" src="https://github.com/user-attachments/assets/c59245b8-577a-412a-9678-73de324c5a6a" />
+
+###  Billing Address
+
+<img width="2160" height="1440" alt="image" src="https://github.com/user-attachments/assets/0d514bf7-8084-4e24-9c95-9bc54c092817" />
+
+### CheckOut Page
+<img width="2160" height="1440" alt="image" src="https://github.com/user-attachments/assets/eba10929-1b14-4873-9843-ebdb71f007bb" />
 
 ---
 
